@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import { MarkerData } from '../types';
+import { Marker } from '../types';
 
 interface MapProps {
-  markers: MarkerData[];
+  markers: Marker[];
   onLongPress: (latitude: number, longitude: number) => void;
-  onMarkerPress: (markerId: string) => void;
+  onMarkerPress: (markerId: number) => void;
 }
 
 type MapMessage =
   | { type: 'ready' }
   | { type: 'error'; message: string }
   | { type: 'longPress'; latitude: number; longitude: number }
-  | { type: 'markerPress'; id: string };
+  | { type: 'markerPress'; id: number };
 
-const INITIAL_CENTER = { latitude: 55.751244, longitude: 37.618423, zoom: 11 };
+const INITIAL_CENTER = { latitude: 58.0105, longitude: 56.2502, zoom: 11 };
 
 const MAP_HTML = `
 <!DOCTYPE html>

@@ -9,17 +9,18 @@ import {
   Text,
   View,
 } from 'react-native';
-import { ImageData } from '../types';
+import { MarkerImage } from '../types';
 
 interface ImageListProps {
-  images: ImageData[];
-  onRemove: (imageId: string) => void;
+  images: MarkerImage[];                     
+  onRemove: (imageId: number) => void;       
 }
+
 
 export default function ImageList({ images, onRemove }: ImageListProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
-  const confirmRemove = (imageId: string) => {
+  const confirmRemove = (imageId: number) => {
     Alert.alert('Удалить изображение?', 'Это действие нельзя отменить.', [
       { text: 'Отмена', style: 'cancel' },
       { text: 'Удалить', style: 'destructive', onPress: () => onRemove(imageId) },
@@ -38,7 +39,7 @@ export default function ImageList({ images, onRemove }: ImageListProps) {
     <>
       <FlatList
         data={images}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         contentContainerStyle={styles.list}
         columnWrapperStyle={styles.row}

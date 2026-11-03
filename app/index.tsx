@@ -1,18 +1,43 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import Map12 from '../components/Map';
-import { useMarkers } from '../context/MarkerContext';
+import React, { useCallback, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
+import Map from '../components/Map';
+import { useDatabase } from '../contexts/DatabaseContext';
+import { Marker } from '../types';
 
 export default function MapScreen() {
   const router = useRouter();
-  const { markers, addMarker } = useMarkers();
+  const { getMarkers, addMarker } = useDatabase();
+  const [markers, setMarkers] = useState<Marker[]>([]);
+
+  const loadMarkers = useCallback(async () => {
+    try {
+      setMarkers(await getMarkers());
+    } catch (e) {
+      Alert.alert('Ошибка', e instanceof Error ? e.message : 'Не удалось загрузить маркеры');
+    }
+  }, [getMarkers]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMarkers();
+    }, [loadMarkers])
+  );
+
+  const handleLongPress = async (latitude: number, longitude: number) => {
+    try {
+      await addMarker(latitude, longitude);
+      await loadMarkers();
+    } catch (e) {
+      Alert.alert('Ошибка', e instanceof Error ? e.message : 'Не удалось добавить маркер');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Map12
+      <Map
         markers={markers}
-        onLongPress={addMarker}
+        onLongPress={handleLongPress}
         onMarkerPress={(id) => router.push(`/marker/${id}`)}
       />
     </View>

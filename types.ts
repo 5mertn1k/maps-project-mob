@@ -1,15 +1,17 @@
-export interface ImageData {
-  id: string;
-  uri: string;
-}
-
-export interface MarkerData {
-  id: string;
+export interface Marker {
+  id: number;
   latitude: number;
   longitude: number;
-  images: ImageData[];
+  created_at: string;
+}
+
+export interface MarkerImage {
+  id: number;
+  marker_id: number;
+  uri: string;
+  created_at: string;
 }
 
 export type MarkerRouteParams = {
-  id: string;
+  id: string; 
 };
